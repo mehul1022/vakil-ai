@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VakilAI — Indian Law Advisor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --saffron: #FF9933;
+            --white: #F5F0E8;
+            --green: #138808;
+            --navy: #000080;
+            --gold: #C9A84C;
+            --dark: #0D1117;
+            --surface: #161B22;
+            --surface2: #1E2530;
+            --border: rgba(201,168,76,0.2);
+            --text: #E8E2D6;
+            --text-muted: #8B8577;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--dark);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--saffron), var(--white), var(--green));
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--saffron), var(--gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-text h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text p {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-clear {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .btn-clear:hover { border-color: var(--gold); color: var(--gold); }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+            margin-left: 8px;
+        }
+
+        .username-display {
+            font-size: 12px;
+            color: var(--gold);
+            font-weight: 500;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid rgba(255, 153, 51, 0.3);
+            color: var(--saffron);
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            letter-spacing: 0.5px;
+        }
+        .btn-logout:hover { 
+            border-color: var(--saffron);
+            background: rgba(255, 153, 51, 0.1);
+            color: var(--saffron);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(19,136,8,0.4); }
+            50% { box-shadow: 0 0 0 5px rgba(19,136,8,0); }
+        }
+
+        /* Main layout */
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 20px 16px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            padding-left: 4px;
+        }
+
+        .quick-question {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            transition: all 0.2s;
+        }
+
+        .quick-question:hover {
+            border-color: var(--gold);
+            color: var(--text);
+            background: rgba(201,168,76,0.05);
+        }
+
+        .disclaimer-box {
+            margin-top: 20px;
+            background: rgba(255,153,51,0.08);
+            border: 1px solid rgba(255,153,51,0.2);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .disclaimer-box h4 {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--saffron);
+            margin-bottom: 6px;
+        }
+
+        .disclaimer-box p {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Chat area */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            scroll-behavior: smooth;
+        }
+
+        .messages::-webkit-scrollbar { width: 4px; }
+        .messages::-webkit-scrollbar-track { background: transparent; }
+        .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+        /* Welcome screen */
+        .welcome {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-emblem {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .welcome h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .welcome p {
+            font-size: 14px;
+            color: var(--text-muted);
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .tricolor-line {
+            display: flex;
+            gap: 0;
+            margin: 20px 0;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .tricolor-line span {
+            height: 3px;
+            width: 60px;
+        }
+
+        /* Messages */
+        .message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            animation: fadeUp 0.3s ease;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user { flex-direction: row-reverse; }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .avatar.ai {
+            background: linear-gradient(135deg, #C9A84C, #FF9933);
+        }
+
+        .avatar.user {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .bubble {
+            max-width: 75%;
+            padding: 13px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .message.ai .bubble {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-top-left-radius: 2px;
+            color: var(--text);
+        }
+
+        .message.user .bubble {
+            background: linear-gradient(135deg, rgba(201,168,76,0.15), rgba(255,153,51,0.1));
+            border: 1px solid rgba(201,168,76,0.25);
+            border-top-right-radius: 2px;
+            color: var(--text);
+        }
+
+        /* Markdown-like formatting in responses */
+        .bubble strong { color: var(--gold); font-weight: 600; }
+        .bubble em { color: var(--saffron); font-style: normal; }
+
+        .bubble ul, .bubble ol {
+            padding-left: 18px;
+            margin: 6px 0;
+        }
+
+        .bubble li { margin-bottom: 3px; }
+
+        .bubble code {
+            background: rgba(201,168,76,0.1);
+            border: 1px solid rgba(201,168,76,0.2);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--gold);
+        }
+
+        /* Typing indicator */
+        .typing {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .typing span {
+            width: 6px;
+            height: 6px;
+            background: var(--gold);
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+            40% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* Input area */
+        .input-area {
+            padding: 16px 24px 20px;
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 14px;
+            transition: border-color 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: rgba(201,168,76,0.5);
+        }
+
+        #userInput {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            resize: none;
+            max-height: 120px;
+            min-height: 22px;
+            line-height: 1.5;
+        }
+
+        #userInput::placeholder { color: var(--text-muted); }
+
+        #sendBtn {
+            background: linear-gradient(135deg, var(--saffron), var(--gold));
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+
+        #sendBtn:hover { transform: scale(1.05); }
+        #sendBtn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        #sendBtn svg { width: 16px; height: 16px; fill: white; }
+
+        .input-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .debug-toggle {
+            background: transparent;
+            border: 1px solid rgba(139, 133, 119, 0.3);
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            margin-top: 8px;
+            transition: all 0.2s;
+        }
+
+        .debug-toggle:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .debug-console {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            width: 350px;
+            height: 250px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-right: none;
+            border-bottom: none;
+            border-radius: 8px 0 0 0;
+            display: none;
+            flex-direction: column;
+            z-index: 9999;
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.3);
+        }
+
+        .debug-console.show {
+            display: flex;
+        }
+
+        .debug-header {
+            padding: 8px 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--gold);
+        }
+
+        .debug-output {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .debug-output .debug-log {
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .debug-log.info { color: #4EDF4B; }
+        .debug-log.error { color: #FF6B6B; }
+        .debug-log.warning { color: var(--saffron); }
+        .debug-log.success { color: #51CF66; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+            .debug-console { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <div class="logo-icon">⚖️</div>
+        <div class="logo-text">
+            <h1>VakilAI</h1>
+            <p>Indian Constitutional Law Advisor</p>
+        </div>
+    </div>
+    <div class="header-actions">
+        <div class="status-dot"></div>
+        <button class="btn-clear" onclick="clearChat()">New Chat</button>
+        <div class="user-menu">
+            <span id="username" class="username-display"></span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</header>
+
+<div class="main">
+    <aside class="sidebar">
+        <div class="sidebar-title">Quick Questions</div>
+        <div id="quickQuestions">
+            <!-- Populated by JS -->
+        </div>
+        <div class="disclaimer-box">
+            <h4>⚠️ Legal Disclaimer</h4>
+            <p>VakilAI provides general legal information based on Indian law. For specific legal proceedings, please consult a licensed advocate.</p>
+        </div>
+    </aside>
+
+    <div class="chat-area">
+        <div class="messages" id="messages">
+            <div class="welcome" id="welcome">
+                <div class="welcome-emblem">🏛️</div>
+                <h2>Namaste! I am VakilAI</h2>
+                <div class="tricolor-line">
+                    <span style="background:#FF9933"></span>
+                    <span style="background:#F5F0E8"></span>
+                    <span style="background:#138808"></span>
+                </div>
+                <p>Your AI-powered guide to Indian Constitutional Law. Ask me about your Fundamental Rights, legal procedures, IPC, RTI, and more.</p>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <div class="input-wrapper">
+                <textarea
+                    id="userInput"
+                    placeholder="Ask about your legal rights, procedures, laws..."
+                    rows="1"
+                    onkeydown="handleKey(event)"
+                    oninput="autoResize(this)"
+                ></textarea>
+                <button id="sendBtn" onclick="sendMessage()">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="input-hint">Press Enter to send · Shift+Enter for new line</div>
+            <button class="debug-toggle" onclick="toggleDebugConsole()">🐛 Debug</button>
+        </div>
+    </div>
+    
+    <!-- Debug Console -->
+    <div id="debugConsole" class="debug-console">
+        <div class="debug-header">
+            <span>Debug Console</span>
+            <button onclick="clearDebugConsole()" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">Clear</button>
+            <button onclick="toggleDebugConsole()" style="background: none; border: none; color: var(--text-muted); cursor: pointer;">✕</button>
+        </div>
+        <div id="debugOutput" class="debug-output"></div>
+    </div>
+</div>
+
+<script>
+    let isLoading = false;
+
+    // Save original console methods BEFORE doing anything else
+    const originalLog = window.console.log;
+    const originalError = window.console.error;
+
+    // Debug Console Functions
+    function debugLog(message, type = 'info') {
+        const output = document.getElementById('debugOutput');
+        const log = document.createElement('div');
+        log.className = `debug-log ${type}`;
+        log.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        output.appendChild(log);
+        output.scrollTop = output.scrollHeight;
+        // Use original console to avoid infinite recursion
+        originalLog(`[${type}]`, message);
+    }
+
+    function toggleDebugConsole() {
+        const console = document.getElementById('debugConsole');
+        console.classList.toggle('show');
+        debugLog('Debug console ' + (console.classList.contains('show') ? 'opened' : 'closed'), 'info');
+    }
+
+    function clearDebugConsole() {
+        document.getElementById('debugOutput').innerHTML = '';
+        debugLog('Console cleared', 'info');
+    }
+
+    // Intercept console.log AFTER saving originals
+    console.log = function(...args) {
+        originalLog.apply(console, args);
+        debugLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), 'info');
+    };
+
+    console.error = function(...args) {
+        originalError.apply(console, args);
+        debugLog(args.map(a => typeof a === 'object' ? JSON.stringify(a) : String(a)).join(' '), 'error');
+    };
+
+    // Load suggested questions
+    async function loadQuestions() {
+        try {
+            const res = await fetch('/api/suggested-questions');
+            const data = await res.json();
+            const container = document.getElementById('quickQuestions');
+            data.questions.forEach(q => {
+                const div = document.createElement('div');
+                div.className = 'quick-question';
+                div.textContent = q;
+                div.onclick = () => {
+                    document.getElementById('userInput').value = q;
+                    sendMessage();
+                };
+                container.appendChild(div);
+            });
+        } catch(e) {}
+    }
+
+    function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+
+    function handleKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    function appendMessage(role, text) {
+        const welcome = document.getElementById('welcome');
+        if (welcome) welcome.remove();
+
+        const messages = document.getElementById('messages');
+        const msg = document.createElement('div');
+        msg.className = `message ${role}`;
+
+        const avatar = document.createElement('div');
+        avatar.className = `avatar ${role}`;
+        avatar.textContent = role === 'ai' ? '⚖️' : '👤';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = formatText(text);
+
+        msg.appendChild(avatar);
+        msg.appendChild(bubble);
+        messages.appendChild(msg);
+        messages.scrollTop = messages.scrollHeight;
+        return bubble;
+    }
+
+    function showTyping() {
+        const welcome = document.getElementById('welcome');
+        if (welcome) welcome.remove();
+
+        const messages = document.getElementById('messages');
+        const msg = document.createElement('div');
+        msg.className = 'message ai';
+        msg.id = 'typing-indicator';
+
+        const avatar = document.createElement('div');
+        avatar.className = 'avatar ai';
+        avatar.textContent = '⚖️';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = '<div class="typing"><span></span><span></span><span></span></div>';
+
+        msg.appendChild(avatar);
+        msg.appendChild(bubble);
+        messages.appendChild(msg);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    function removeTyping() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+    }
+
+    function formatText(text) {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/^### (.*)/gm, '<strong>$1</strong>')
+            .replace(/^## (.*)/gm, '<strong>$1</strong>')
+            .replace(/^# (.*)/gm, '<strong>$1</strong>')
+            .replace(/^- (.*)/gm, '• $1')
+            .replace(/\n/g, '<br>');
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const text = input.value.trim();
+        if (!text || isLoading) return;
+
+        isLoading = true;
+        document.getElementById('sendBtn').disabled = true;
+        input.value = '';
+        input.style.height = 'auto';
+
+        appendMessage('user', text);
+        showTyping();
+        
+        debugLog(`Sending message: "${text.substring(0, 50)}..."`, 'info');
+
+        try {
+            const res = await fetch('/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            });
+
+            debugLog(`Response status: ${res.status}`, res.ok ? 'success' : 'warning');
+            const data = await res.json();
+            debugLog(`Response data received: ${JSON.stringify(data).substring(0, 100)}...`, 'info');
+            removeTyping();
+
+            // Handle non-200 responses
+            if (!res.ok) {
+                let errorMsg = data.error || data.message || `Error ${res.status}`;
+                
+                // Special handling for specific status codes
+                if (res.status === 401) {
+                    errorMsg = '⚠️ Session expired. Please login again.';
+                    debugLog('Session expired - redirecting to login', 'warning');
+                    setTimeout(() => window.location.href = '/login', 2000);
+                } else if (res.status === 429) {
+                    errorMsg = `⏳ Rate limited. Please wait ${data.retry_in_seconds?.toFixed(0) || '30'} seconds.`;
+                    debugLog('Rate limited: ' + errorMsg, 'warning');
+                } else if (res.status === 504) {
+                    errorMsg = '⏱️ Groq API timeout. Please try again.';
+                    debugLog('API timeout after 30 seconds', 'error');
+                } else if (res.status === 500) {
+                    errorMsg = `❌ Server error: ${data.message || 'Unknown error'}`;
+                    debugLog('Server error: ' + data.message, 'error');
+                }
+                
+                appendMessage('ai', errorMsg);
+                debugLog('API Error: ' + errorMsg, 'error');
+            } else if (data.error) {
+                // Handle errors in 200 responses
+                appendMessage('ai', '❌ Error: ' + (data.message || data.error));
+                debugLog('Error in response: ' + (data.message || data.error), 'error');
+            } else if (data.response) {
+                appendMessage('ai', data.response);
+                debugLog('Message received successfully', 'success');
+            } else {
+                appendMessage('ai', '❌ Invalid response from server');
+                debugLog('No response in data: ' + JSON.stringify(data), 'error');
+            }
+        } catch(e) {
+            removeTyping();
+            debugLog('Fetch error: ' + e.message, 'error');
+            appendMessage('ai', `❌ Connection error: ${e.message || 'Please check if the server is running.'}`);
+        }
+
+        isLoading = false;
+        document.getElementById('sendBtn').disabled = false;
+        input.focus();
+    }
+
+    async function clearChat() {
+        await fetch('/api/clear', { method: 'POST' });
+        const messages = document.getElementById('messages');
+        messages.innerHTML = `
+            <div class="welcome" id="welcome">
+                <div class="welcome-emblem">🏛️</div>
+                <h2>Namaste! I am VakilAI</h2>
+                <div class="tricolor-line">
+                    <span style="background:#FF9933"></span>
+                    <span style="background:#F5F0E8"></span>
+                    <span style="background:#138808"></span>
+                </div>
+                <p>Your AI-powered guide to Indian Constitutional Law. Ask me about your Fundamental Rights, legal procedures, IPC, RTI, and more.</p>
+            </div>`;
+    }
+
+    async function loadUser() {
+        try {
+            const res = await fetch('/api/user');
+            if (res.ok) {
+                const user = await res.json();
+                document.getElementById('username').textContent = user ? `👤 ${user}` : 'User';
+            }
+        } catch(e) {}
+    }
+
+    async function logout() {
+        if (confirm('Are you sure you want to logout?')) {
+            try {
+                const res = await fetch('/api/logout', { method: 'POST' });
+                if (res.ok) {
+                    const data = await res.json();
+                    window.location.href = data.redirect || '/login';
+                }
+            } catch(e) {
+                alert('Logout failed. Redirecting...');
+                window.location.href = '/login';
+            }
+        }
+    }
+
+    loadQuestions();
+    loadUser();
+    document.getElementById('userInput').focus();
+</script>
+</body>
+</html>

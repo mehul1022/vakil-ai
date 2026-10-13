@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VakilAI Register — Indian Law Advisor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --saffron: #FF9933;
+            --white: #F5F0E8;
+            --green: #138808;
+            --navy: #000080;
+            --gold: #C9A84C;
+            --dark: #0D1117;
+            --surface: #161B22;
+            --surface2: #1E2530;
+            --border: rgba(201,168,76,0.2);
+            --text: #E8E2D6;
+            --text-muted: #8B8577;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--dark);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-section h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--saffron), var(--gold), var(--green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-section p {
+            font-size: 13px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, var(--saffron), var(--gold));
+            border: none;
+            border-radius: 8px;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 153, 51, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #FF6B6B;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: rgba(19, 136, 8, 0.1);
+            border: 1px solid rgba(19, 136, 8, 0.3);
+            color: #4EDF4B;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 28px 0;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .divider::before {
+            margin-right: 12px;
+        }
+
+        .divider::after {
+            margin-left: 12px;
+        }
+
+        .signin-link {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 20px;
+        }
+
+        .signin-link a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+
+        .signin-link a:hover {
+            color: var(--saffron);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid var(--border);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            list-style: none;
+        }
+
+        .password-requirements li {
+            margin-bottom: 4px;
+        }
+
+        .password-requirements li::before {
+            content: '✓ ';
+            color: var(--green);
+            margin-right: 4px;
+        }
+
+        .password-requirements li.unmet::before {
+            content: '○ ';
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="logo-section">
+            <h1>VakilAI</h1>
+            <p>INDIAN LEGAL ADVISOR</p>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Choose a username (3+ characters)" required autocomplete="username" minlength="3">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email address" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Create a strong password (6+ characters)" required minlength="6" autocomplete="new-password">
+                <ul class="password-requirements" id="requirements">
+                    <li class="unmet" id="req-length">At least 6 characters</li>
+                </ul>
+            </div>
+
+            <button type="submit" class="submit-btn" id="submitBtn">Create Account</button>
+            <div class="loading" id="loading">
+                <span class="spinner"></span> Creating account...
+            </div>
+        </form>
+
+        <div class="divider">OR</div>
+
+        <div class="signin-link">
+            Already have an account? <a href="/login">Sign in</a>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const errorMsg = document.getElementById('errorMessage');
+        const successMsg = document.getElementById('successMessage');
+        const submitBtn = document.getElementById('submitBtn');
+        const loading = document.getElementById('loading');
+        const passwordInput = document.getElementById('password');
+
+        // Password requirement checker
+        passwordInput.addEventListener('input', () => {
+            const length = passwordInput.value.length;
+            const reqLength = document.getElementById('req-length');
+            
+            if (length >= 6) {
+                reqLength.classList.remove('unmet');
+            } else {
+                reqLength.classList.add('unmet');
+            }
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Hide previous messages
+            errorMsg.classList.remove('show');
+            successMsg.classList.remove('show');
+            
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            // Validation
+            if (!username || !email || !password) {
+                errorMsg.textContent = 'Please fill in all fields';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (username.length < 3) {
+                errorMsg.textContent = 'Username must be at least 3 characters';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (password.length < 6) {
+                errorMsg.textContent = 'Password must be at least 6 characters';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            if (!email.includes('@')) {
+                errorMsg.textContent = 'Please enter a valid email address';
+                errorMsg.classList.add('show');
+                return;
+            }
+
+            // Show loading state
+            submitBtn.disabled = true;
+            loading.style.display = 'block';
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    successMsg.textContent = data.message + ' Redirecting to login...';
+                    successMsg.classList.add('show');
+                    
+                    // Redirect after brief delay
+                    setTimeout(() => {
+                        window.location.href = '/login';
+                    }, 1500);
+                } else {
+                    errorMsg.textContent = data.error || 'Registration failed';
+                    errorMsg.classList.add('show');
+                    submitBtn.disabled = false;
+                    loading.style.display = 'none';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'An error occurred. Please try again.';
+                errorMsg.classList.add('show');
+                submitBtn.disabled = false;
+                loading.style.display = 'none';
+            }
+        });
+
+        // Clear error message when user starts typing
+        document.getElementById('username').addEventListener('input', () => {
+            errorMsg.classList.remove('show');
+        });
+        document.getElementById('email').addEventListener('input', () => {
+            errorMsg.classList.remove('show');
+        });
+        document.getElementById('password').addEventListener('input', () => {
+            errorMsg.classList.remove('show');
+        });
+    </script>
+</body>
+</html>
