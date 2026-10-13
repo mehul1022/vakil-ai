@@ -4,7 +4,7 @@ import json
 def get_groq_legal_response(user_query):
     # 1. API Configuration
     url = "https://api.groq.com/openai/v1/chat/completions"
-    api_key = "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" # Replace with your actual key
+    api_key = "Replace with your actual key"
 
     headers = {
         "Authorization": f"Bearer {api_key}",
